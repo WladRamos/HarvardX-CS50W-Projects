@@ -9,7 +9,7 @@ header {
     text-align: right;
 }
 
-header a {
+.header-a{
     margin: 0 10px;
     text-decoration: none;
     color: #3c4043;
@@ -40,7 +40,7 @@ header a {
     align-items: center;
 }
 
-input[type="submit"], a {
+input[type="submit"], .header-a {
     background-color: #ffffff;
     color: #3c4043;
     padding: 10px 20px;
@@ -50,9 +50,10 @@ input[type="submit"], a {
     border: 0px;
 }
 
-input[type="submit"]:hover, a:hover {
+input[type="submit"]:hover, .header-a:hover {
     color: black;
     border: 1px solid grey;
+    text-decoration: none;
 }
 .logo{
     width: auto;
