@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Advanced Search</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+    <header>
+        <img class="logo" src="images\logo-navbar.jpg" alt="navbar logo" >
+        <a style="text-decoration: none; color: inherit;" href="index.html">Google Search</a>
+    </header>
+    
+    <main>
+        <div>
+            <label id="advanced-search-label"> Advanced search</label>
+        </div>
+        <form action="https://www.google.com/search">
+            <div class="container-fluid text-left">
+                <div class="row">
+                    <div class="col-2" style="font-size: 16px; text-align: left; margin-left: 20px; ">
+                        Find pages with...
+                    </div>
+                    <div class=" col-5">
+                        
+                    </div>
+                    <div class="col" style="font-size: 16px; text-align: left; ">
+                        To do this in the search box.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2" style="font-size: 13px; text-align: left; margin-left: 20px; ">
+                        all these words:
+                    </div>
+                    <div class=" col-5">
+                        <input class="advanced-search-input" type="text" id="all-words" name="as_q" style="height: 25px;">
+                    </div>
+                    <div class="col" style="font-size: 11px; text-align: left;">
+                        Type the important words:  tri-colour rat terrier
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2" style="font-size: 13px; text-align: left; margin-left: 20px;">
+                        this exact word or phrase:
+                    </div>
+                    <div class=" col-5">
+                        <input class="advanced-search-input" type="text" id="exact-phrase" name="as_epq" style="height: 25px;">
+                    </div>
+                    <div class="col" style="font-size: 11px; text-align: left; ">
+                        Put exact words in quotes:  "rat terrier"
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2" style="font-size: 13px; text-align: left; margin-left: 20px; ">
+                        any of these words:
+                    </div>
+                    <div class=" col-5">
+                        <input class="advanced-search-input" type="text" id="any-words" name="as_oq" style="height: 25px;">
+                    </div>
+                    <div class="col" style="font-size: 11px; text-align: left; ">
+                        Type OR between all the words you want: miniature OR standard
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2" style="font-size: 13px; text-align: left; margin-left: 20px; ">
+                        none of these words:
+                    </div>
+                    <div class=" col-5">
+                        <input class="advanced-search-input" type="text" id="none-words" name="as_eq" style="height: 25px;">
+                    </div>
+                    <div class="col" style="font-size: 11px; text-align: left; ">
+                        Put a minus sign just before words that you don't want: -rodent, -"Jack Russell"
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2" style="font-size: 13px; text-align: left; margin-left: 20px; ">
+                        
+                    </div>
+                    <div class=" col-5" style="text-align: right;">
+                        <input id="advanced-button" type="submit" value="Advanced Search">
+                    </div>
+                    <div class="col">
+                        
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+    </main>
+</body>
+</html>
