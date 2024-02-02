@@ -13,7 +13,9 @@ def index(request):
 def entry(request, title):
     page = util.get_entry(title)
     if page is None:
-        return render(request, "encyclopedia\error.html")
+        return render(request, "encyclopedia\error.html", {
+            "error": "Requested page was not found"
+        })
     else:
         return render(request, "encyclopedia\entry.html", {
             "title": title,
@@ -21,7 +23,7 @@ def entry(request, title):
         })
 
 def search(request):
-    query = request.GET.get('q') #######################################
+    query = request.GET.get('q')
     entries = util.list_entries()
 
     matching_entries = []
@@ -36,3 +38,22 @@ def search(request):
             "query": query,
             "entries": matching_entries
         })
+
+def new_page(request):
+    if request.method == "POST":
+        title = request.POST.get('new_page_title')
+        content = request.POST.get('new_page_content')
+        entries = util.list_entries()
+        
+        for entry in entries:
+            if title.lower() == entry.lower():
+                return render(request, "encyclopedia\error.html", {
+                    "error": "Page title already exists"
+                })
+        util.save_entry(title, content)
+        return render(request, "encyclopedia\entry.html", {
+            "title": title,
+            "page_content": markdown2.markdown(content)
+        })
+    else:
+        return render(request, "encyclopedia\\new_page.html")
