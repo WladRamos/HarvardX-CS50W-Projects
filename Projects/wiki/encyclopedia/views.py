@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
 from . import util
 import markdown2
+import random
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -57,3 +57,28 @@ def new_page(request):
         })
     else:
         return render(request, "encyclopedia\\new_page.html")
+
+def edit(request, page_title):
+    if request.method == "POST":
+        content = request.POST.get('new_page_content')
+        util.save_entry(page_title, content)
+        return render(request, "encyclopedia\entry.html", {
+            "title": page_title,
+            "page_content": markdown2.markdown(content)
+        })
+    else:
+        page_content = util.get_entry(page_title)
+        return render(request, "encyclopedia\edit.html", {
+            "page_content": page_content,
+            "page_title": page_title
+        })
+
+def random_page(request):
+    entries = util.list_entries()
+    n = random.randint(0, len(entries) - 1)
+    title = entries[n]
+    content = util.get_entry(title)
+    return render(request, "encyclopedia\entry.html", {
+            "title": title,
+            "page_content": markdown2.markdown(content)
+        })

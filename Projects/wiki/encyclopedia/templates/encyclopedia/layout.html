@@ -22,8 +22,11 @@
                     <a href="{% url 'new_page' %}">Create New Page</a>
                 </div>
                 <div>
-                    Random Page
+                    <a href="{% url 'random_page' %}">Random Page</a>
                 </div>
+                    {% if request.path|lower|slice:":6" == '/wiki/' %}
+                    <a href="{% url 'edit' page_title=title %}">Edit page</a>
+                    {% endif %}
                 {% block nav %}
                 {% endblock %}
             </div>

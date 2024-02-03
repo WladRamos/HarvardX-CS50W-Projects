@@ -7,11 +7,15 @@
 {% block body %}
     <form action="{% url 'new_page' %}" method="post">
         {% csrf_token %}
-        <input type="text" placeholder="Title" name="new_page_title" required>
-        <textarea name="new_page_content" id="new_page_content" cols="30" rows="10" required>
-
-        </textarea>
-        <input type="submit" value="Save page">
+        <div>
+            <input type="text" placeholder="Title" name="new_page_title" style="width: 40%;">
+        </div>
+        <div>
+            <textarea name="new_page_content" id="new_page_content" cols="30" rows="10" style="height: auto;" required></textarea>
+        </div>
+        <div>
+            <input type="submit" value="Save page">
+        </div>
     </form>
 
 {% endblock %}
