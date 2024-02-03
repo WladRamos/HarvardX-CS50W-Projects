@@ -24,8 +24,10 @@
                 <div>
                     <a href="{% url 'random_page' %}">Random Page</a>
                 </div>
-                    {% if request.path|lower|slice:":6" == '/wiki/' %}
-                    <a href="{% url 'edit' page_title=title %}">Edit page</a>
+                    {% if page_content %}
+                        {% if request.path|lower|slice:":6" == '/wiki/' %}
+                        <a href="{% url 'edit' page_title=title %}">Edit page</a>
+                        {% endif %}
                     {% endif %}
                 {% block nav %}
                 {% endblock %}
