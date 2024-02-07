@@ -1,0 +1,16 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <form action="{% url 'index' %}" method="post">
+        <input type="text" name="title" placeholder="title">
+        <textarea name="description" placeholder="description" cols="30" rows="10"></textarea>
+        <input type="number" name="starting_bid" placeholder="starting bid">
+        <input type="text" placeholder="Image URL">
+        <select name="category">
+            {% for category in categories %}
+            <option value="{{ category.id }}">{{ category }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit">
+    </form>
+{% endblock %}
