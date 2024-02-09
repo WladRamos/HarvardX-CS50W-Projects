@@ -1,0 +1,37 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+<div class="container-fluid text-center">
+    <h1>{{ title }}</h1>
+
+    status: {{ status }}
+
+    {% if url %}
+        <img style="width: 200px; height: auto;" src="{{ url }}" alt="{{ title }} Image"><br>
+    {% else %}
+        **Listing owner did not provide image**<br>
+    {% endif %}
+
+    Price: {{ price }}
+
+    description: {{ description }}
+
+    category:
+    <ul>
+        {% for category in categories %}
+            <li>{{ category }}</li>
+        {% endfor %}
+    </ul>
+    
+    Owner Information:
+    <ul>
+        <li>username: {{ owner.username }}</li>
+        <li>email: {{ owner.email }}</li>
+    </ul>
+
+
+</div>
+
+
+
+{% endblock %}

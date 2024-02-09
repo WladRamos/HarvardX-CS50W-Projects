@@ -1,16 +1,63 @@
 {% extends "auctions/layout.html" %}
 
+{% block title %}New Listing{% endblock %}
+
 {% block body %}
     <form action="{% url 'index' %}" method="post">
-        <input type="text" name="title" placeholder="title">
-        <textarea name="description" placeholder="description" cols="30" rows="10"></textarea>
-        <input type="number" name="starting_bid" placeholder="starting bid">
-        <input type="text" placeholder="Image URL">
-        <select name="category">
-            {% for category in categories %}
-            <option value="{{ category.id }}">{{ category }}</option>
-            {% endfor %}
-        </select>
-        <input type="submit">
+        {% csrf_token %}
+        <div class="container-fluid text-center">
+            <div class="row">
+                <div class="col">
+                  
+                </div>
+                <div class="col">
+                    Title: <input type="text" name="title" style="width: 100%;" required>
+                </div>
+                <div class="col">
+                  
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                  
+                </div>
+                <div class="col-6" style="margin-top: 20px; margin-bottom: 20px;">
+                    Description: <textarea name="description" rows="5" style="width: 100%;" required></textarea>
+                </div>
+                <div class="col">
+                  
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    Starting bid: <input type="number" name="starting_bid" style="width: 100%;" required>
+                </div>
+                <div class="col">
+                    Image URL: <input type="text" name="img_url" style="width: 100%;">
+                </div>
+                <div class="col">
+                    category: <select name="category" style="width: 100%;" multiple size="3" required>                   
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                  
+                </div>
+                <div class="col" style="text-align: center; margin-top: 20px;">
+                    <input type="submit">
+                </div>
+                <div class="col">
+                    
+                </div>
+              </div>
+            </div>
+        </div>
     </form>
 {% endblock %}

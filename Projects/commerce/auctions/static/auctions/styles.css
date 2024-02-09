@@ -1,3 +1,13 @@
 body {
     padding: 10px;
 }
+
+#clickableDiv {
+    width: 300px;
+    height: 200px;
+    background-color: lightblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}

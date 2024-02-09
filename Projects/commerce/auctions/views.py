@@ -3,12 +3,34 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-
+from .models import Category, Listing
 from .models import User
-
+from django.contrib.auth.decorators import login_required
 
 def index(request):
-    return render(request, "auctions/index.html")
+    if request.method == "POST":
+        title = request.POST["title"]
+        description = request.POST["description"]
+        starting_bid = request.POST["starting_bid"]
+        img_url = request.POST["img_url"]
+
+        new_listing = Listing.objects.create(
+            title=title,
+            description=description,
+            starting_bid=starting_bid,
+            greater_bid=starting_bid,
+            owner=request.user,
+            url = img_url
+        )
+        new_listing.save()
+        active_listings = Listing.objects.filter(status=True)
+        return render(request, "auctions/index.html", {
+            "listings": active_listings
+        })
+    active_listings = Listing.objects.filter(status=True)
+    return render(request, "auctions/index.html", {
+        "listings": active_listings
+    })
 
 
 def login_view(request):
@@ -62,7 +84,24 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+@login_required
 def new_listing(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
-    return render(request, "auctions/new_listing.html")
+    
+    return render(request, "auctions/new_listing.html", {
+        "categories": Category.objects.all()
+    })
+
+def listing(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    price = max(listing.starting_bid, listing.greater_bid)
+    return render(request, "auctions\listing.html", {
+        "title": listing.title,
+        "description": listing.description,
+        "price": price,
+        "owner": listing.owner,
+        "url": listing.url,
+        "categories": listing.category.all(),
+        "status": listing.status
+    })
