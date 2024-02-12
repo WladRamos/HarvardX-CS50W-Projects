@@ -1,24 +1,36 @@
 {% extends 'auctions/layout.html' %}
 
+{% block title %}Watchlist{% endblock %}
+
 {% block body %}
-<div class="container-fluid text-center">
-    <h1>Watchlist</h1>
+
+    <h2>Watchlist</h2>
 
     {% if watchlist_listings %}
-        <ul>
-            {% for watchlist_listing in watchlist_listings %}
-                <li>
-                    {% if watchlist_listing.listing.url %}
-                    <img style="width: 200px; height: auto;" src="{{ watchlist_listing.listing.url }}" alt="{{ watchlist_listing.listing.title }} Image"><br>
+        {% for watchlist_listing in watchlist_listings %}
+        <a href="{% url 'listing' watchlist_listing.listing.id %}" class="custom-card-link">
+            <div class="container my-3 custom-card">
+                <div class="row">
+                    <div class="col-12">
+                        <strong>Title:</strong> {{ watchlist_listing.listing.title }}<br>
+                        <strong>Description:</strong> {{ watchlist_listing.listing.description }}<br>
+                        <strong>Greater Bid:</strong> ${{ watchlist_listing.listing.greater_bid|default:watchlist_listing.listing.starting_bid }}<br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {% if watchlist_listing.listing.url %}
+                            <img src="{{ watchlist_listing.listing.url }}" class="img-fluid" alt="{{ watchlist_listing.listing.title }} Image">
                         {% else %}
-                            **Listing owner did not provide image**<br>
+                            <p class="text-muted">**Listing owner did not provide image**</p>
                         {% endif %}
-                    <a href="{% url 'listing' watchlist_listing.listing.id %}">{{ watchlist_listing.listing.title }}</a>
-                </li>
-            {% endfor %}
-        </ul>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
     {% else %}
         <p>Your watchlist is empty.</p>
     {% endif %}
-</div>
+
 {% endblock %}

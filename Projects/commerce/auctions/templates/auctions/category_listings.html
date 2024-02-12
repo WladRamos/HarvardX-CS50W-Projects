@@ -1,17 +1,33 @@
 {% extends 'auctions/layout.html' %}
 
-{% block body %}
-<div class="container-fluid text-center">
-    <h1>Listings in {{ category.category_name }}</h1>
+{% block title %}Listings in {{ category.category_name }}{% endblock %}
 
-    <ul>
-        {% for listing in listings %}
-            <li>
-                <a href="{% url 'listing' listing.id %}">{{ listing.title }}</a>
-            </li>
-        {% empty %}
-            <li>No active listings in this category.</li>
-        {% endfor %}
-    </ul>
-</div>
+{% block body %}
+
+    <h2>Listings in {{ category.category_name }}</h2>
+
+    {% for listing in listings %}
+        <a href="{% url 'listing' listing.id %}" class="custom-card-link">
+            <div class="container my-3 custom-card">
+                <div class="row">
+                    <div class="col-12">
+                        <strong>Title:</strong> {{ listing.title }}<br>
+                        <strong>Description:</strong> {{ listing.description }}<br>
+                        <strong>Greater Bid:</strong> ${{ listing.greater_bid|default:listing.starting_bid }}<br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {% if listing.url %}
+                            <img src="{{ listing.url }}" class="img-fluid" alt="{{ listing.title }} Image">
+                        {% else %}
+                            <p class="text-muted">**Listing owner did not provide image**</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </a>
+    {% empty %}
+        <li>No active listings in this category.</li>
+    {% endfor %}
 {% endblock %}

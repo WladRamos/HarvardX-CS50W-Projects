@@ -3,61 +3,57 @@
 {% block title %}New Listing{% endblock %}
 
 {% block body %}
+<div class="container-fluid text-center">
+    <h1>Create a New Listing</h1>
+
     <form action="{% url 'index' %}" method="post">
         {% csrf_token %}
-        <div class="container-fluid text-center">
-            <div class="row">
-                <div class="col">
-                  
-                </div>
-                <div class="col">
-                    Title: <input type="text" name="title" style="width: 100%;" required>
-                </div>
-                <div class="col">
-                  
-                </div>
-              </div>
+
+        <div class="row mb-3">
+            <div class="col"></div>
+            <div class="col-6">
+                <input type="text" name="title" class="form-control" placeholder="Title" required>
             </div>
-            <div class="row">
-                <div class="col">
-                  
-                </div>
-                <div class="col-6" style="margin-top: 20px; margin-bottom: 20px;">
-                    Description: <textarea name="description" rows="5" style="width: 100%;" required></textarea>
-                </div>
-                <div class="col">
-                  
-                </div>
-              </div>
+            <div class="col"></div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col"></div>
+            <div class="col-6">
+                <textarea name="description" class="form-control" rows="5" placeholder="Description" required></textarea>
             </div>
-            <div class="row">
-                <div class="col">
-                    Starting bid: <input type="number" name="starting_bid" style="width: 100%;" required>
+            <div class="col"></div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">$</span>
+                    </div>
+                    <input type="number" name="starting_bid" class="form-control" placeholder="Starting Bid" required>
                 </div>
-                <div class="col">
-                    Image URL: <input type="text" name="img_url" style="width: 100%;">
-                </div>
-                <div class="col">
-                    category: <select name="category" style="width: 100%;" multiple size="3" required>                   
-                        {% for category in categories %}
-                            <option value="{{ category.id }}">{{ category }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-              </div>
             </div>
-            <div class="row">
-                <div class="col">
-                  
-                </div>
-                <div class="col" style="text-align: center; margin-top: 20px;">
-                    <input type="submit">
-                </div>
-                <div class="col">
-                    
-                </div>
-              </div>
+            <div class="col">
+                <input type="text" name="img_url" class="form-control" placeholder="Image URL">
+            </div>
+            <div class="col">
+                <select name="category" class="form-control" multiple size="3" required>
+                    <option value="" disabled>Category</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-6">
+                <button type="submit" class="btn btn-primary">Create Listing</button>
+            </div>
+            <div class="col"></div>
+        </div>
     </form>
+</div>
 {% endblock %}

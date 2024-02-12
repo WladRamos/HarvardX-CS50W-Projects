@@ -1,26 +1,29 @@
 {% extends "auctions/layout.html" %}
 
+{% block title %}Active Auctions{% endblock %}
+
 {% block body %}
     <h2>Active Listings</h2>
-    <ul>
-        {% for listing in listings %}
-            <li>
-                <a href="{% url 'listing' listing.id %}">
-                    <div id="clickableDiv">
-                        
+    {% for listing in listings %}
+        <a href="{% url 'listing' listing.id %}" class="custom-card-link">
+            <div class="container my-3 custom-card">
+                <div class="row">
+                    <div class="col-12">
                         <strong>Title:</strong> {{ listing.title }}<br>
                         <strong>Description:</strong> {{ listing.description }}<br>
-                        <strong>Greater Bid:</strong> {{ listing.greater_bid|default:listing.starting_bid }}<br>
-                        {% if listing.url %}
-                                <img style="width: 200px; height: auto;" src="{{ listing.url }}" alt="{{  listing.title }} Image"><br>
-                        {% else %}
-                            **Listing owner did not provide image**<br>
-                        {% endif %}
-                
-                        
+                        <strong>Greater Bid:</strong> ${{ listing.greater_bid|default:listing.starting_bid }}<br>
                     </div>
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {% if listing.url %}
+                            <img src="{{ listing.url }}" class="img-fluid" alt="{{ listing.title }} Image">
+                        {% else %}
+                            <p class="text-muted">**Listing owner did not provide image**</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
 {% endblock %}
