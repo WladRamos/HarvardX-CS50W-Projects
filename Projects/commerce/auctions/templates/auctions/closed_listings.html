@@ -1,0 +1,26 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Closed Listings</h2>
+    <ul>
+        {% for listing in listings %}
+            <li>
+                <a href="{% url 'listing' listing.id %}">
+                    <div id="clickableDiv">
+                        
+                        <strong>Title:</strong> {{ listing.title }}<br>
+                        <strong>Description:</strong> {{ listing.description }}<br>
+                        <strong>Greater Bid:</strong> {{ listing.greater_bid|default:listing.starting_bid }}<br>
+                        {% if listing.url %}
+                                <img style="width: 200px; height: auto;" src="{{ listing.url }}" alt="{{  listing.title }} Image"><br>
+                        {% else %}
+                            **Listing owner did not provide image**<br>
+                        {% endif %}
+                
+                        
+                    </div>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

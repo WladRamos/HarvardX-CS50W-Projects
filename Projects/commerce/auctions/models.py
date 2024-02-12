@@ -20,6 +20,7 @@ class Listing(models.Model):
     url = models.CharField(max_length=128, validators=[URLValidator()], blank=True)
     category = models.ManyToManyField(Category, related_name="listings")
     status = models.BooleanField(default=True)
+    winner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="won_listings")
 
     def __str__(self):
         return self.title
@@ -30,7 +31,7 @@ class Bid(models.Model):
     value = models.IntegerField(validators=[MinValueValidator(10)])
 
     def __str__(self):
-        return f"Bid by {self.author.username}"
+        return f"Bid by {self.author.username} on {self.listing.title}"
 
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")

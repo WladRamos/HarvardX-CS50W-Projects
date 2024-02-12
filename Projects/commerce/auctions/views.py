@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .models import Category, Listing
+from .models import Category, Listing, Watchlist, Bid, Comment
 from .models import User
 from django.contrib.auth.decorators import login_required
 
@@ -18,7 +18,7 @@ def index(request):
             title=title,
             description=description,
             starting_bid=starting_bid,
-            greater_bid=starting_bid,
+            greater_bid=0,
             owner=request.user,
             url = img_url
         )
@@ -32,6 +32,11 @@ def index(request):
         "listings": active_listings
     })
 
+def closed_listings(request):
+    closed = Listing.objects.filter(status=False)
+    return render(request, "auctions/closed_listings.html", {
+        "listings": closed
+    })
 
 def login_view(request):
     if request.method == "POST":
@@ -86,22 +91,99 @@ def register(request):
 
 @login_required
 def new_listing(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("login"))
-    
     return render(request, "auctions/new_listing.html", {
         "categories": Category.objects.all()
     })
 
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
-    price = max(listing.starting_bid, listing.greater_bid)
+    price_type = ""
+    price = 0
+
+    if listing.starting_bid > listing.greater_bid:
+        price = listing.starting_bid
+        price_type = "Starting bid"
+    else:
+        price = listing.greater_bid
+        price_type = "Greater bid"
+    
+    is_in_watchlist = request.user.is_authenticated and request.user.watchlist_set.filter(listing=listing).exists()
+
+    is_owner = request.user.is_authenticated and listing.owner == request.user
+
+    is_winner = request.user.is_authenticated and listing.winner == request.user and not listing.status
+
+    comments = Comment.objects.filter(listing=listing)
+
     return render(request, "auctions\listing.html", {
-        "title": listing.title,
-        "description": listing.description,
+        "listing": listing,
+        "price_type": price_type,
         "price": price,
-        "owner": listing.owner,
-        "url": listing.url,
         "categories": listing.category.all(),
-        "status": listing.status
+        "is_in_watchlist": is_in_watchlist,
+        "is_owner": is_owner,
+        "is_winner": is_winner,
+        "comments": comments,
     })
+
+@login_required
+def watchlist(request, listing_id):
+    user = request.user
+    listing = Listing.objects.get(pk=listing_id)
+    
+    if Watchlist.objects.filter(user=user, listing=listing).exists():
+        Watchlist.objects.filter(user=user, listing=listing).delete()
+    else:
+        new_watching_item = Watchlist.objects.create(
+            user=user,
+            listing=listing
+        )
+        new_watching_item.save()
+
+    return HttpResponseRedirect(reverse('listing', args=[listing_id]))
+
+@login_required
+def watchlist_page(request):
+    watchlist_listings = Watchlist.objects.filter(user=request.user)
+    return render(request, "auctions/watchlist.html", {"watchlist_listings": watchlist_listings})
+
+
+@login_required
+def make_bid(request, listing_id):
+    if request.method == 'POST':
+        bid_value = int(request.POST.get('bid_value'))
+        listing = Listing.objects.get(pk=listing_id)
+        
+        if listing.starting_bid > listing.greater_bid:
+            minimum_bid = listing.starting_bid
+        else:
+            minimum_bid = listing.greater_bid
+        
+        if bid_value >= minimum_bid:
+            bid = Bid.objects.create(listing=listing, author=request.user, value=bid_value)
+            listing.greater_bid = bid_value
+            listing.save()
+            bid.save()
+            return HttpResponseRedirect(reverse('listing', args=[listing_id]))
+
+@login_required
+def close_auction(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    if request.method == 'POST' and listing.owner == request.user:
+        if listing.greater_bid != 0:
+            highest_bid = listing.bids.get(value=listing.greater_bid)
+            if highest_bid:
+                listing.winner = highest_bid.author
+        listing.status = False
+        listing.save()
+    return HttpResponseRedirect(reverse('listing', args=[listing_id]))
+
+@login_required
+def comments(request, listing_id):
+    if request.method == 'POST':
+        listing = Listing.objects.get(pk=listing_id)
+        comment = request.POST.get('comment')
+        if comment:
+            new_comment = Comment.objects.create(author=request.user, listing=listing, comment=comment)
+            new_comment.save()
+    return HttpResponseRedirect(reverse('listing', args=[listing_id]))

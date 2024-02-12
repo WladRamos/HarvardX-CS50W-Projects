@@ -2,19 +2,26 @@
 
 {% block body %}
 <div class="container-fluid text-center">
-    <h1>{{ title }}</h1>
+    <h1>{{ listing.title }}</h1>
 
-    status: {{ status }}
+    status: {% if listing.status %}Active{% else %}Closed{% endif %}
 
-    {% if url %}
-        <img style="width: 200px; height: auto;" src="{{ url }}" alt="{{ title }} Image"><br>
+    {% if is_owner %}
+    <form action="{% url 'close_auction' listing.id %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Close Auction">
+    </form>
+    {% endif %}
+
+    {% if listing.url %}
+        <img style="width: 200px; height: auto;" src="{{ listing.url }}" alt="{{ listing.title }} Image"><br>
     {% else %}
         **Listing owner did not provide image**<br>
     {% endif %}
 
-    Price: {{ price }}
+    {{price_type}}: {{ price }}
 
-    description: {{ description }}
+    description: {{ listing.description }}
 
     category:
     <ul>
@@ -25,13 +32,53 @@
     
     Owner Information:
     <ul>
-        <li>username: {{ owner.username }}</li>
-        <li>email: {{ owner.email }}</li>
+        <li>username: {{ listing.owner.username }}</li>
+        <li>email: {{ listing.owner.email }}</li>
     </ul>
 
+    {% if listing.status %}
 
+        <form action="{% url 'watchlist' listing.id %}" method="POST">
+            {% csrf_token %}
+            {% if request.user.is_authenticated %}
+                <input type="submit" value="{% if is_in_watchlist %}Remove from Watchlist{% else %}Add to Watchlist{% endif %}">
+            {% else %}
+                <p>Please <a href="{% url 'login' %}">login</a> to add this item to your watchlist.</p>
+            {% endif %}
+        </form>
+
+        <form action="{% url 'make_bid' listing.id %}" method="POST">
+            {% csrf_token %}
+            <label for="bid_value">Your Bid:</label>
+            <input type="number" name="bid_value" id="bid_value" min="{% if price_type == 'Starting bid' %}{{ price }}{% else %}{{ price|add:1 }}{% endif %}" required>
+            <input type="submit" value="Place Bid">
+        </form>
+    {% else %}
+        {% if is_winner %}
+        <h2>Congratulations! You have won this auction.</h2>
+        {% endif %}
+    {% endif %}
+    
+
+    <!-- Formulário de Comentário -->
+    <h2>Add a Comment</h2>
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'comments' listing.id %}">
+        {% csrf_token %}
+        <textarea name="comment" rows="4" cols="50" placeholder="Enter your comment"></textarea>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    {% else %}
+    <p>Please <a href="{% url 'login' %}">login</a> to add a comment.</p>
+    {% endif %}
+    
+    <!-- Comentários -->
+    <h2>Comments</h2>
+    {% for comment in comments %}
+        <p>{{ comment.author.username }}: {{ comment.comment }}</p>
+    {% empty %}
+        <p>No comments yet.</p>
+    {% endfor %}
 </div>
-
-
-
 {% endblock %}

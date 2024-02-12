@@ -1,0 +1,24 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+<div class="container-fluid text-center">
+    <h1>Watchlist</h1>
+
+    {% if watchlist_listings %}
+        <ul>
+            {% for watchlist_listing in watchlist_listings %}
+                <li>
+                    {% if watchlist_listing.listing.url %}
+                    <img style="width: 200px; height: auto;" src="{{ watchlist_listing.listing.url }}" alt="{{ watchlist_listing.listing.title }} Image"><br>
+                        {% else %}
+                            **Listing owner did not provide image**<br>
+                        {% endif %}
+                    <a href="{% url 'listing' watchlist_listing.listing.id %}">{{ watchlist_listing.listing.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Your watchlist is empty.</p>
+    {% endif %}
+</div>
+{% endblock %}
