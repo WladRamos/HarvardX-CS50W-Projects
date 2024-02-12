@@ -1,10 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .models import Category, Listing, Watchlist, Bid, Comment
-from .models import User
+from .models import Category, Listing, Watchlist, Bid, Comment, User
 from django.contrib.auth.decorators import login_required
 
 def index(request):
@@ -187,3 +186,12 @@ def comments(request, listing_id):
             new_comment = Comment.objects.create(author=request.user, listing=listing, comment=comment)
             new_comment.save()
     return HttpResponseRedirect(reverse('listing', args=[listing_id]))
+
+def categories(request):
+    categories = Category.objects.all()
+    return render(request, "auctions/categories.html", {"categories": categories})
+
+def category_listings(request, category_id):
+    category = Category.objects.get(pk=category_id)
+    listings = Listing.objects.filter(category=category, status=True)
+    return render(request, "auctions/category_listings.html", {"category": category, "listings": listings})
