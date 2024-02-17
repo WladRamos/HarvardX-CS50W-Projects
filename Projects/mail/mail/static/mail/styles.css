@@ -6,9 +6,13 @@ textarea {
     border: 1px solid black;
     padding: 5px;
     cursor: pointer;
+}
 
-    .timestamp{
-        text-align: right;
-    }
+.read {
+    background-color: #ddd;
+}
+
+.unread {
+    background-color: #fff; 
 }
 
