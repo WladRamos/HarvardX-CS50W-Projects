@@ -69,7 +69,15 @@ function load_mailbox(mailbox) {
     // Print emails
     console.log(emails);
 
-    // ... do something else with emails ...
+    emails.forEach(email => {
+      const element = document.createElement('div');
+      element.classList.add('mail-box');
+      element.innerHTML = `<strong>${email.sender}</strong> <span style="margin-left: 15px;">${email.subject}</span> <span style="float: right; color: #888;">${email.timestamp}</span>`;
+      element.addEventListener('click', function() {
+        console.log('This element has been clicked!')
+      });
+      document.querySelector('#emails-view').append(element);
+    });
   })
   .catch(error =>{
     console.log('Error:', error)

@@ -1,3 +1,14 @@
 textarea {
     min-height: 400px;
 }
+
+.mail-box {
+    border: 1px solid black;
+    padding: 5px;
+    cursor: pointer;
+
+    .timestamp{
+        text-align: right;
+    }
+}
+
