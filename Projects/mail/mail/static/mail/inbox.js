@@ -93,11 +93,11 @@ function load_mailbox(mailbox) {
           })
         })
         .then(() => {
-          // Levar o usuário para a visualização do email
+          // Take user to a view where he can see the content of that email
           document.querySelector('#emails-view').style.display = 'none';
           document.querySelector('#compose-view').style.display = 'none';
           document.querySelector('#selected-email-view').style.display = 'block';
-          // Criar e exibir os detalhes do email
+          
           const div1 = document.createElement('div');
           const div2 = document.createElement('div');
           const div3 = document.createElement('div');
@@ -113,33 +113,32 @@ function load_mailbox(mailbox) {
           div2.innerHTML = `<span>${clickedEmail.body}</span>`
 
           if (mailbox !== 'sent') {
+            div3.innerHTML = '<hr>'
             const archiveButton = document.createElement('button');
             archiveButton.setAttribute('id', 'archive-button');
             archiveButton.setAttribute('type', 'button');
             archiveButton.classList.add('btn', 'btn-primary');
             div3.appendChild(archiveButton);
             
-            // Adiciona um evento de clique ao botão
             archiveButton.addEventListener('click', function() {
-              // Verifica se o email está arquivado ou não
-              const isArchived = clickedEmail.archived
-                
-              // Atualiza o status de arquivamento do email
+              
+              const isArchived = !clickedEmail.archived;
+        
               fetch(`/emails/${emailId}`, {
                 method: 'PUT',
                 body: JSON.stringify({
-                  archived: !isArchived
+                  archived: isArchived
                 })
               })
               .then(() => {
                 archiveButton.textContent = isArchived ? 'Unarchive' : 'Archive';
+                clickedEmail.archived = isArchived;
               })
               .catch(error =>{
                 console.log('Error:', error)
               });
             });
         
-            // Define o texto inicial do botão de acordo com o status de arquivamento atual
             archiveButton.textContent = clickedEmail.archived ? 'Unarchive' : 'Archive';
           }else {
             div3.innerHTML = '';
