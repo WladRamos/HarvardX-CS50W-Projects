@@ -93,69 +93,7 @@ function load_mailbox(mailbox) {
           })
         })
         .then(() => {
-          // Take user to a view where he can see the content of that email
-          document.querySelector('#emails-view').style.display = 'none';
-          document.querySelector('#compose-view').style.display = 'none';
-          document.querySelector('#selected-email-view').style.display = 'block';
-          
-          const div1 = document.createElement('div');
-          const div2 = document.createElement('div');
-          const div3 = document.createElement('div');
-
-          div1.innerHTML = `
-            <strong>From:</strong> <span>${clickedEmail.sender}</span> <br>
-            <strong>To:</strong> <span>${clickedEmail.recipients.join(', ')}</span> <br>
-            <strong>Subject:</strong> <span>${clickedEmail.subject}</span> <br>
-            <strong>Timestamp:</strong> <span>${clickedEmail.timestamp}</span> <br>
-            <hr>
-          `;
-
-          div2.innerHTML = `<span>${clickedEmail.body}</span>`
-
-          div3.innerHTML = '<hr>'
-          
-          if (mailbox !== 'sent') {
-            const archiveButton = document.createElement('button');
-            archiveButton.setAttribute('id', 'archive-button');
-            archiveButton.setAttribute('type', 'button');
-            archiveButton.classList.add('btn', 'btn-primary');
-            div3.appendChild(archiveButton);
-            
-            archiveButton.addEventListener('click', function() {
-              
-              const isArchived = clickedEmail.archived;
-        
-              fetch(`/emails/${emailId}`, {
-                method: 'PUT',
-                body: JSON.stringify({
-                  archived: !isArchived
-                })
-              })
-              .then(() => {
-                load_mailbox('inbox')
-              })
-              .catch(error =>{
-                console.log('Error:', error)
-              });
-            });
-            archiveButton.textContent = clickedEmail.archived ? 'Unarchive' : 'Archive';
-          }
-
-          const replyButton = document.createElement('button');
-          replyButton.setAttribute('id', 'archive-button');
-          replyButton.setAttribute('type', 'button');
-          replyButton.classList.add('btn', 'btn-primary');
-          replyButton.style.marginLeft = '5px';
-          replyButton.textContent = 'Reply';
-          div3.appendChild(replyButton);
-          
-          replyButton.addEventListener('click', function() {
-            reply(clickedEmail.sender, clickedEmail.subject, clickedEmail.body, clickedEmail.timestamp);
-          });
-
-          document.querySelector('#selected-email-view').innerHTML = '';
-          document.querySelector('#selected-email-view').append(div1, div2, div3);
-          
+          load_mail_content(mailbox, clickedEmail);
         })
         .catch(error =>{
           console.log('Error:', error)
@@ -167,6 +105,71 @@ function load_mailbox(mailbox) {
   .catch(error =>{
     console.log('Error:', error)
   });
+}
+
+function load_mail_content(mailbox, clickedEmail){
+  // Take user to a view where he can see the content of that email
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#selected-email-view').style.display = 'block';
+  
+  const div1 = document.createElement('div');
+  const div2 = document.createElement('div');
+  const div3 = document.createElement('div');
+
+  div1.innerHTML = `
+    <strong>From:</strong> <span>${clickedEmail.sender}</span> <br>
+    <strong>To:</strong> <span>${clickedEmail.recipients.join(', ')}</span> <br>
+    <strong>Subject:</strong> <span>${clickedEmail.subject}</span> <br>
+    <strong>Timestamp:</strong> <span>${clickedEmail.timestamp}</span> <br>
+    <hr>
+  `;
+
+  div2.innerHTML = `<span>${clickedEmail.body}</span>`
+
+  div3.innerHTML = '<hr>'
+  
+  if (mailbox !== 'sent') {
+    const archiveButton = document.createElement('button');
+    archiveButton.setAttribute('id', 'archive-button');
+    archiveButton.setAttribute('type', 'button');
+    archiveButton.classList.add('btn', 'btn-primary');
+    div3.appendChild(archiveButton);
+    
+    archiveButton.addEventListener('click', function() {
+      
+      const isArchived = clickedEmail.archived;
+
+      fetch(`/emails/${clickedEmail.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          archived: !isArchived
+        })
+      })
+      .then(() => {
+        load_mailbox('inbox')
+      })
+      .catch(error =>{
+        console.log('Error:', error)
+      });
+    });
+    archiveButton.textContent = clickedEmail.archived ? 'Unarchive' : 'Archive';
+  }
+
+  const replyButton = document.createElement('button');
+  replyButton.setAttribute('id', 'archive-button');
+  replyButton.setAttribute('type', 'button');
+  replyButton.classList.add('btn', 'btn-primary');
+  replyButton.style.marginLeft = '5px';
+  replyButton.textContent = 'Reply';
+  div3.appendChild(replyButton);
+  
+  replyButton.addEventListener('click', function() {
+    reply(clickedEmail.sender, clickedEmail.subject, clickedEmail.body, clickedEmail.timestamp);
+  });
+
+  document.querySelector('#selected-email-view').innerHTML = '';
+  document.querySelector('#selected-email-view').append(div1, div2, div3);
 }
 
 function reply(sender, subject, body, timestamp) {
@@ -193,3 +196,4 @@ function reply(sender, subject, body, timestamp) {
     send_email(email_recipient, email_subject, email_body);
   }
 }
+
