@@ -5,6 +5,9 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import User, Post
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator
 
 
 def index(request):
@@ -17,8 +20,12 @@ def index(request):
     
     all_posts = Post.objects.all()
     all_posts = all_posts.order_by("-created_at").all()
+    paginator = Paginator(all_posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, "network/index.html", {
-        "posts": all_posts
+        "page_title": "All Posts",
+        "page_obj": page_obj
     })
 
 
@@ -74,7 +81,54 @@ def register(request):
         return render(request, "network/register.html")
     
 def profile(request, user_id):
-    user = User.objects.get(pk=user_id)
+    profile_user = User.objects.get(pk=user_id)
+    
+    not_owner = profile_user != request.user
+    following = False
+    if not_owner:
+        following = request.user in profile_user.followers.all()
+            
+    profile_posts = Post.objects.filter(poster_username_id=user_id)
+    profile_posts = profile_posts.order_by("-created_at").all()
+    paginator = Paginator(profile_posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, "network/profile.html",{
-        "user":user
+        "profile_user":profile_user,
+        "follow_button": not_owner,
+        "following": following,
+        "page_obj": page_obj
+    })
+
+
+@csrf_exempt
+def follow_unfollow_user(request, user_id):
+    current_user = request.user
+    target_user = User.objects.get(pk=user_id)
+    
+    if current_user == target_user:
+        return JsonResponse({'error': 'user should not be able to follow themselves.'}, status=400)
+    
+    if current_user in target_user.followers.all():
+        target_user.followers.remove(current_user)
+        is_following = False
+    else:
+        target_user.followers.add(current_user)
+        is_following = True
+    
+    return JsonResponse({'is_following': is_following})
+
+@login_required
+def following(request):
+    user = request.user
+    following_users = user.following.all()
+    following_posts = Post.objects.filter(poster_username__in=following_users)
+    following_posts = following_posts.order_by("-created_at").all()
+
+    paginator = Paginator(following_posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, "network/index.html", {
+        "page_title": "Following",
+        "page_obj": page_obj
     })

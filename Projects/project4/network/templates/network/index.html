@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-md"></div> 
                 <div class="col-md-10">
-                    <h1 style="text-align: center;">All Posts</h1>
+                    <h1 style="text-align: center;">{{page_title}}</h1>
                     {% if user.is_authenticated %}
                         <div class="post-box" style="margin-top: 20px;">
                             <h5 style="text-align: center; margin-bottom: 10px;">New Post</h5>
@@ -17,20 +17,47 @@
                                     <textarea class="form-control" name="post_content" rows="3" placeholder="Write your post here" required></textarea>
                                 </div>
                                 <div style="margin-top: 10px;">
-                                    <input type="submit" class="btn btn-primary float-end" value="Post">
+                                    <input type="submit" class="btn btn-primary" value="Post">
                                 </div>
                             </form>
                         </div>
                     {% endif %}
-                    {% for post in posts %}
+                    {% for post in page_obj  %}
                         <div class="post-box" style="margin-top: 10px;">
-                            <strong>{{post.poster_username}}</strong> <span style="float: right;">{{post.created_at}}</span>
+                            <a href="{% url 'profile' post.poster_username.id %}"><strong>{{post.poster_username}}</strong></a> <span style="float: right;">{{post.created_at}}</span>
                             <hr>
                             <span>{{post.content}}</span>
                             <hr>
                             <span>❤️{{post.likes}}</span>
                         </div>
                     {% endfor %}
+                    <nav aria-label="pages">
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">Previous</span>
+                                </li>
+                            {% endif %}
+                            {% for num in page_obj.paginator.page_range %}
+                                <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">Next</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
                 </div>
                 <div class="col-md"></div> 
             </div>

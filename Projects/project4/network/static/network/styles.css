@@ -3,3 +3,11 @@
     padding: 5px;
     cursor: pointer;
 }
+
+.profile-header{
+    margin-top: 20px;
+    border: 1px solid #ced4da;
+    padding: 5px;
+    cursor: pointer;
+    align-items: center;
+}
