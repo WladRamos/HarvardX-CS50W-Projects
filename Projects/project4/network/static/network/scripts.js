@@ -6,14 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
   followButton.onclick = function(){
     
     const userId = this.dataset.userId;
-    const isFollowing = this.dataset.following;
     
-    fetch(`/api/follow/${userId}/`, {
-      method: 'POST',
-      body: JSON.stringify({
-        is_following: isFollowing,
-      }),
-    })
+    fetch(`/api/follow/${userId}/`)
     .then(response => response.json())
     .then(data => {
       followButton.textContent = data.is_following ? 'Unfollow' : 'Follow';
