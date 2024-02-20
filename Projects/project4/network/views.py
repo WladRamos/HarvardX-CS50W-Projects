@@ -8,6 +8,7 @@ from .models import User, Post
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
+import json
 
 
 def index(request):
@@ -100,7 +101,7 @@ def profile(request, user_id):
         "page_obj": page_obj
     })
 
-
+@login_required
 @csrf_exempt
 def follow_unfollow_user(request, user_id):
     current_user = request.user
@@ -132,3 +133,22 @@ def following(request):
         "page_title": "Following",
         "page_obj": page_obj
     })
+
+@csrf_exempt
+@login_required
+def edit_post(request, post_id):
+    try:
+        post = Post.objects.get(poster_username = request.user, pk=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
+    
+    if request.method == "PUT":
+        new_post_content = json.loads(request.body)
+        if new_post_content.get("content") is not None:
+            post.content = new_post_content["content"]
+        post.save()
+        return HttpResponse(status=204)
+    else:
+        return JsonResponse({
+            "error": "PUT request required."
+        }, status=400)

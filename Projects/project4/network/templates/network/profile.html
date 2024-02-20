@@ -25,12 +25,17 @@
                         </div>
                     </div>
                     {% for post in page_obj  %}
-                        <div class="post-box" style="margin-top: 10px;">
+                        <div class="post-box" style="margin-top: 10px;" data-post-id="{{ post.id }}">
                             <a href="{% url 'profile' post.poster_username.id %}"><strong>{{post.poster_username}}</strong></a> <span style="float: right;">{{post.created_at}}</span>
                             <hr>
-                            <span>{{post.content}}</span>
+                            <span class="post-content">{{post.content}}</span>
+                            <textarea class="edit-content form-control" style="display: none;">{{ post.content }}</textarea>
+                            <button class="save-edit btn btn-primary" style="display: none; margin-top: 10px;">Save</button>
                             <hr>
-                            <span>❤️{{post.likes}}</span>
+                            <span>❤️{{post.likes}}</span> 
+                            {% if post.poster_username.id == user.id %}
+                                <a class="edit-post" href="" style="float: right;">Edit</a>
+                            {% endif %}
                         </div>
                     {% endfor %}
                     <nav aria-label="pages">
