@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     editLink.addEventListener('click', function(event) {
       event.preventDefault();
       
-      const postBox = event.target.closest('.post-box');
+      const postBox = event.target.parentElement;
       const postContent = postBox.querySelector('.post-content');
       const editContent = postBox.querySelector('.edit-content');
       const saveButton = postBox.querySelector('.save-edit');
@@ -57,6 +57,29 @@ document.addEventListener('DOMContentLoaded', function() {
         editContent.style.display = 'none';
         saveButton.style.display = 'none';
         postContent.style.display = 'block';
+      });
+    });
+  });
+
+  //“Like” and “Unlike”
+  const likeButtons = document.querySelectorAll('.like-button');
+
+  likeButtons.forEach(function(button) {
+    button.addEventListener('click', function() {
+
+      const postBox = button.parentElement;
+      const postId = postBox.dataset.postId;
+      
+      const likesNumber = parseInt(postBox.querySelector('.likes-number'));
+
+      fetch(`/api/like_unlike/${postId}`)
+      .then(response => response.json())
+      .then(data => {
+        const likesNumber = postBox.querySelector('.likes-number');
+        likesNumber.textContent = data.likes_count;
+      })
+      .catch(error =>{
+        console.log('Error:', error)
       });
     });
   });

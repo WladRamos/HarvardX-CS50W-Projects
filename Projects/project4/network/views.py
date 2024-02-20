@@ -152,3 +152,18 @@ def edit_post(request, post_id):
         return JsonResponse({
             "error": "PUT request required."
         }, status=400)
+
+def like_unlike(request, post_id):
+    try:
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
+    
+    if post.has_liked(request.user):
+        post.unlike(request.user)
+        likes_count = post.count_likes()
+        return JsonResponse({"likes_count": likes_count})
+    else:
+        post.like(request.user)
+        likes_count = post.count_likes()
+        return JsonResponse({"likes_count": likes_count})

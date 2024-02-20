@@ -32,7 +32,7 @@
                             <textarea class="edit-content form-control" style="display: none;">{{ post.content }}</textarea>
                             <button class="save-edit btn btn-primary" style="display: none; margin-top: 10px;">Save</button>
                             <hr>
-                            <span>❤️{{post.likes}}</span> 
+                            <a class="like-button">&#10084;</a><span class="likes-number">{{post.count_likes }}</span>
                             {% if post.poster_username.id == user.id %}
                                 <a class="edit-post" href="" style="float: right;">Edit</a>
                             {% endif %}
