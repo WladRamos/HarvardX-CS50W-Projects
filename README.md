@@ -1,3 +1,6 @@
+# Description
+This repository contains the projects developed during the HarvardX CS50's Web Programming with Python and JavaScript course
+
 # Projects
 
 1. Google Search Page - https://youtu.be/1zqs61NufkU
